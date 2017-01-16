@@ -4,6 +4,7 @@ import Test.QuickCheck
 import Test.QuickCheck.All
 import Control.Arrow --for copy/pasted  quickCheck of p6
 
+
 --99 questions begins
 
 --problem 1
@@ -70,6 +71,17 @@ isPalindrome (x:xs) = isPalindrome' (x:xs)
 --problem 7
 data NestedList a = Elem a | List [NestedList a]
 
+flatten :: NestedList a -> [a]
+flatten (Elem x) = [x]
+flatten (List (x:xs)) = flatten x ++ flatten (List xs)
+flatten (List []) = []
+
+--problem 8
+compress :: Eq a => [a] -> [a]
+compress [] = []
+compress [x] = [x]
+compress (x:xs) = x:compress [y | y <- xs, y /= x]
+
 --tests
 prop_myLast x xs = x `notElem` xs ==> myLast (xs ++ [x]) == x --p1
 prop_myButLast x y  xs = x `notElem` xs && x /= y ==> myButLast (xs++[x]++[y]) == x --p2
@@ -78,6 +90,8 @@ prop_myLength xs = myLength xs == length xs --p4
 prop_myReverse xs = myReverse xs == reverse xs --p5
 --I'll be honest, I don't know what this means, I just copied an answer
 prop_isPalindrome xs = isPalindrome xs == (uncurry (==) . (id &&& reverse)) xs--p6
+--prop_flatten (NestedList xs) = flatten xs == 
+--prop_compress xs =
 
 return []
 runTests = $quickCheckAll
